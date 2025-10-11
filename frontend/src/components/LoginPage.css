@@ -1,0 +1,502 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;500;600&display=swap');
+
+.login-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1rem;
+  background: linear-gradient(160deg, #f0f4f8, #ffffff);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Bokeh effect circles */
+.login-page-container::before,
+.login-page-container::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: 0;
+  opacity: 0.5;
+}
+
+.login-page-container::before {
+  top: 5%;
+  left: -10%;
+  width: 350px;
+  height: 350px;
+  background-color: #d6eaff;
+}
+
+.login-page-container::after {
+  bottom: 5%;
+  right: -10%;
+  width: 450px;
+  height: 450px;
+  background-color: #ffe4e9;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  z-index: 1;
+}
+
+.logo-title {
+  font-family: 'Pacifico', cursive;
+  font-size: 3.5rem;
+  color: #2c3e50;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.logo-icon {
+  width: 40px;
+  height: auto;
+  margin-bottom: -15px;
+  color: #e74c3c;
+  opacity: 0.8;
+}
+
+.logo-tagline {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  color: #7f8c8d;
+  margin-top: 0.25rem;
+}
+
+.login-card {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px);
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.card-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid #dfe6e9;
+  border-radius: 12px;
+  background-color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  color: #2d3436;
+}
+
+.input-field::placeholder {
+  color: #b2bec3;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1);
+}
+
+.email-login-button {
+  width: 100%;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.3s;
+  margin-top: 0.5rem;
+}
+
+.email-login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(220, 50, 40, 0.2);
+}
+
+.email-login-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.divider {
+  font-family: 'Poppins', sans-serif;
+  color: #b2bec3;
+  margin: 1.5rem 0;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.google-login-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 12px;
+  border: 1px solid #dfe6e9;
+  background-color: #fff;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  color: #34495e;
+  font-size: 0.95rem;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.google-login-button:hover {
+  background-color: #f7f7f7;
+  border-color: #bdc3c7;
+}
+
+.google-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+}
+
+.signup-link {
+  margin-top: 1.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.signup-link button {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0 0 0 4px;
+  font-size: inherit;
+}
+
+.signup-link button:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+    background-color: #fed7d7;
+    color: #c53030;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+.button-group {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.submit-button, .cancel-button {
+    width: 100%;
+    padding: 0.9rem;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.submit-button {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+.submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(220, 50, 40, 0.2);
+}
+
+.cancel-button {
+    background-color: #dfe6e9;
+    color: #2d3436;
+}
+
+.cancel-button:hover {
+    background-color: #b2bec3;
+}
+
+/* Style for when buttons are disabled */
+.submit-button:disabled, .cancel-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+/* Add these styles to the end of LoginPage.css */
+
+.avatar-uploader {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.avatar-uploader input[type="file"] {
+  display: none; /* This hides the default, ugly file input */
+}
+
+.avatar-label {
+  width: 100px;
+  height: 100px;
+  border: 2px dashed #b2bec3;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden; /* This is important for the preview image */
+  background-color: #f7f7f7;
+}
+
+.avatar-label:hover {
+  border-color: #e74c3c;
+  background-color: #fdf6f8;
+}
+
+.avatar-label span {
+  font-size: 3rem;
+  color: #b2bec3;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.avatar-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the preview image covers the circle without distortion */
+}
+/* -------------------------- Existing Styles -------------------------- */
+.login-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    background: #f8f8f8;
+    min-height: 100vh;
+}
+
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.logo-icon {
+    width: 60px;
+    height: 60px;
+    color: #ff6b81;
+}
+
+.logo-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.logo-tagline {
+    font-size: 14px;
+    color: #555;
+}
+
+.login-card {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.card-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.card-subtitle {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.error-message {
+    background: #ffe6e6;
+    color: #d93025;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.cancel-button,
+.submit-button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.cancel-button {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.submit-button {
+    background: #ff6b81;
+    color: #fff;
+}
+
+.avatar-uploader {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.avatar-label {
+    display: block;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px dashed #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.avatar-placeholder span {
+    font-size: 24px;
+    color: #ccc;
+}
+
+.avatar-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-remove {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ff6b81;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.forgot-password-link {
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+.forgot-password-btn {
+    background: none;
+    border: none;
+    color: #dd1d1d;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.signup-link button {
+    background: none;
+    border: none;
+    color: #dd1d1d;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* -------------------------- New Styles for Forgot Password / OTP -------------------------- */
+.otp-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.otp-input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+.resend-otp-button {
+    background: none;
+    border: none;
+    color: #dd1d1d;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: underline;
+    align-self: flex-start;
+    margin-bottom: 10px;
+}
+
+.otp-container .button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}

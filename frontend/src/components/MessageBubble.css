@@ -1,0 +1,480 @@
+/* MessageBubble.css - Updated with Voice Message Styling */
+.message-bubble-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 12px 0;
+    padding: 0 16px;
+    animation: fadeInUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.message-bubble-wrapper.sender {
+    align-items: flex-end;
+}
+
+.message-bubble-wrapper.receiver {
+    align-items: flex-start;
+}
+
+.message-bubble {
+    max-width: 65%;
+    padding: 0;
+    border-radius: 20px;
+    position: relative;
+    word-wrap: break-word;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.message-bubble:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Sender bubble (right side) */
+.message-bubble.sender {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom-right-radius: 6px;
+}
+
+/* Receiver bubble (left side) */
+.message-bubble.receiver {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    color: #2d3748;
+    border: 1px solid #e2e8f0;
+    border-bottom-left-radius: 6px;
+}
+
+/* Message content container */
+.message-bubble > div {
+    padding: 16px;
+}
+
+/* Text message styling */
+.message-text {
+    line-height: 1.5;
+    font-size: 15px;
+    white-space: pre-wrap;
+    font-weight: 400;
+}
+
+/* Voice message styling */
+.message-voice-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    min-width: 200px;
+}
+
+.message-bubble.receiver .message-voice-container {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.voice-icon {
+    color: inherit;
+    flex-shrink: 0;
+}
+
+.message-audio {
+    flex: 1;
+    height: 36px;
+    border-radius: 18px;
+    outline: none;
+}
+
+.message-audio::-webkit-media-controls-panel {
+    background: transparent;
+}
+
+/* Media containers */
+.message-image-container,
+.message-video-container,
+.message-file-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.message-image-container,
+.message-video-container {
+    flex-direction: column;
+}
+
+.message-file-container {
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+}
+
+/* Image styling */
+.message-image {
+    max-width: 280px;
+    max-height: 280px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.message-image:hover {
+    transform: scale(1.02);
+}
+
+/* Video styling */
+.message-video {
+    max-width: 300px;
+    max-height: 300px;
+    border-radius: 12px;
+    background: #000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* File message styling */
+.message-file {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex: 1;
+    margin-right: 12px;
+}
+
+.message-bubble.receiver .message-file {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.message-file:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.message-file span {
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* Download button styling */
+.download-btn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.message-image-container:hover .download-btn,
+.message-video-container:hover .download-btn,
+.message-voice-container:hover .download-btn,
+.message-file-container:hover .download-btn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.download-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+}
+
+.message-file-container .download-btn,
+.message-voice-container .download-btn {
+    position: static;
+    opacity: 1;
+    transform: none;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.message-bubble.receiver .download-btn {
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.message-bubble.receiver .download-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Message metadata */
+.message-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 11px;
+    opacity: 0.9;
+    padding: 0 8px 8px;
+}
+
+.message-bubble-wrapper.sender .message-meta {
+    justify-content: flex-end;
+    padding-right: 4px;
+}
+
+.message-bubble-wrapper.receiver .message-meta {
+    justify-content: flex-start;
+    padding-left: 4px;
+}
+
+.message-time {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    opacity: 0.8;
+}
+
+.message-bubble.sender .message-time {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.message-bubble.receiver .message-time {
+    color: #718096;
+}
+
+/* Enhanced status styles for better visibility */
+.message-status {
+    font-size: 10px;
+    font-weight: 600;
+    font-style: italic;
+    padding: 2px 6px;
+    border-radius: 8px;
+}
+
+.message-status.optimistic {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.2);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.message-status.failed {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+/* Enhanced Tick Mark Styles */
+.message-status-icon {
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    margin-left: 4px;
+}
+
+/* Sent - Single tick (grey) */
+.message-status-icon.sent {
+    color: #9E9E9E;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+}
+
+/* Delivered - Double tick (blue) */
+.message-status-icon.delivered {
+    color: rgb(36, 218, 36);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* Read - Double tick (green) */
+.message-status-icon.read {
+    color: #2196F3;
+    filter: drop-shadow(0 1px 2px rgba(144, 240, 179, 0.4));
+}
+
+.message-status-icon:hover {
+    transform: scale(1.15);
+}
+
+/* Add subtle background for better visibility on light backgrounds */
+.message-bubble.sender .message-meta .message-status-icon {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    padding: 2px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.message-bubble-wrapper.sender {
+    animation: slideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.message-bubble-wrapper.receiver {
+    animation: slideInLeft 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .message-bubble-wrapper {
+        padding: 0 12px;
+        margin: 10px 0;
+    }
+    
+    .message-bubble {
+        max-width: 80%;
+    }
+    
+    .message-image,
+    .message-video {
+        max-width: 240px;
+        max-height: 240px;
+    }
+    
+    .message-bubble > div {
+        padding: 14px;
+    }
+    
+    .message-voice-container {
+        min-width: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .message-bubble-wrapper {
+        padding: 0 8px;
+        margin: 8px 0;
+    }
+    
+    .message-bubble {
+        max-width: 85%;
+    }
+    
+    .message-image,
+    .message-video {
+        max-width: 200px;
+        max-height: 200px;
+    }
+    
+    .message-bubble > div {
+        padding: 12px;
+    }
+    
+    .message-meta {
+        gap: 4px;
+    }
+    
+    .message-voice-container {
+        min-width: 160px;
+        gap: 8px;
+        padding: 10px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .message-bubble.receiver {
+        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        color: #e2e8f0;
+        border-color: #4a5568;
+    }
+    
+    .message-bubble.receiver .message-time {
+        color: #a0aec0;
+    }
+    
+    .message-bubble.receiver .message-voice-container {
+        background: rgba(255, 255, 255, 0.08);
+    }
+    
+    .message-bubble.receiver .message-file {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Selection styling */
+.message-bubble ::selection {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.message-bubble.receiver ::selection {
+    background: rgba(102, 126, 234, 0.2);
+}
+
+/* Focus states for accessibility */
+.download-btn:focus,
+.message-audio:focus,
+.message-file:focus {
+    outline: 2px solid rgba(102, 126, 234, 0.5);
+    outline-offset: 2px;
+}
+
+/* Loading state for images */
+.message-image {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.message-image[src] {
+    background: none;
+    animation: none;
+}

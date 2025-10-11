@@ -1,0 +1,114 @@
+/* src/components/ChatLayout.css */
+
+.chat-layout-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 2rem;
+  color: var(--primary-color);
+}
+
+.logo-icon {
+  width: 48px;
+  height: 48px;
+}
+
+.logo-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.logo-tagline {
+  display: none; /* Keep it clean */
+}
+
+.chat-card {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  height: 85vh;
+  max-height: 900px;
+  background-color: var(--card-background-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.loading-state,
+.error-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  color: var(--text-color-secondary);
+}
+
+.error-state {
+  color: var(--notification-badge-color);
+}
+/* Add this to your ChatLayout.css */
+
+.loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 18px;
+    color: #666;
+}
+
+.error-state {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #e74c3c;
+    text-align: center;
+    gap: 1rem;
+}
+
+.error-state button {
+    padding: 0.5rem 1rem;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.error-state button:hover {
+    background: #0056b3;
+}
+
+.auth-required {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.auth-required .logo-container {
+    opacity: 0.7;
+}
+
+.auth-required .logo-tagline {
+    color: #666;
+    font-style: italic;
+}

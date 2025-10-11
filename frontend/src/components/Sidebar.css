@@ -1,0 +1,348 @@
+/* src/components/Sidebar.css */
+
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+  background-color: var(--sidebar-background-color);
+  border-right: 1px solid var(--border-color);
+  padding: 1.5rem;
+}
+
+.sidebar-header {
+  padding-bottom: 1rem;
+}
+
+.sidebar-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.sidebar-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-button, .add-chat-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color-secondary);
+  transition: background-color var(--transition-speed);
+}
+
+.action-button:hover {
+  background-color: #e4e6eb;
+}
+
+.add-chat-button {
+  background-color: var(--primary-color);
+  color: var(--text-color-inverted);
+}
+.add-chat-button:hover {
+  opacity: 0.9;
+}
+
+.search-container {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 15px 10px 40px;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+  background-color: var(--card-background-color);
+  font-size: 0.95rem;
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color-light);
+}
+.search-input::placeholder {
+  color: var(--text-color-tertiary);
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-color-tertiary);
+}
+
+.user-list {
+  flex: 1;
+  overflow-y: auto;
+  margin: 0 -1.5rem; /* Extend to edges for seamless scrolling */
+  padding: 0 1.5rem;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-speed);
+  margin-bottom: 0.5rem;
+}
+
+.user-item:hover {
+  background-color: var(--background-color);
+}
+
+.user-item.active {
+  background-color: var(--primary-color-light);
+}
+
+.user-avatar-wrapper {
+  position: relative;
+  margin-right: 1rem;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--card-background-color);
+}
+.user-status-dot.online { background-color: var(--online-indicator-color); }
+.user-status-dot.offline { background-color: var(--text-color-tertiary); }
+
+.user-unread-badge {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  background-color: var(--notification-badge-color);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.user-details {
+  flex: 1;
+  overflow: hidden;
+}
+
+.user-details-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-name {
+  font-weight: 600;
+  margin: 0;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.user-last-time {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary);
+}
+
+.user-last-message {
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+  margin: 2px 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-last-message.unread {
+  color: var(--text-color-primary);
+  font-weight: 600;
+}
+
+.sidebar-profile {
+  padding: 1.5rem 0 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.profile-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-avatar-wrapper {
+  position: relative;
+}
+.profile-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.profile-status-indicator {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--card-background-color);
+  background-color: var(--online-indicator-color);
+}
+
+.profile-info {
+  flex: 1;
+}
+.profile-name {
+  margin: 0;
+  font-weight: 600;
+}
+.profile-status {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+}
+
+.profile-actions {
+  display: flex;
+}
+
+.profile-action-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  color: var(--text-color-secondary);
+  border-radius: 50%;
+  transition: all var(--transition-speed);
+}
+.profile-action-button:hover {
+  color: var(--text-color-primary);
+  background-color: var(--border-color);
+}
+.profile-action-button.logout:hover {
+  color: var(--notification-badge-color);
+  background-color: #ffebee;
+}
+/* Add this to your main index.css or App.css */
+
+/* 1. Define colors for both themes using CSS variables */
+
+
+/* 3. Make sure your components use these variables */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color-primary);
+  transition: background-color 0.2s, color 0.2s; /* Smooth transition */
+}
+
+/* Example usage for Sidebar.css (you should update your existing CSS) */
+/* In Sidebar.css */
+.sidebar-container {
+  background-color: var(--sidebar-background-color);
+  border-right: 1px solid var(--border-color);
+}
+.user-item:hover {
+  background-color: var(--hover-color);
+}
+.user-name {
+  color: var(--text-color-primary);
+}
+.user-last-message {
+  color: var(--text-color-secondary);
+}
+.has-unread .user-last-message.unread {
+    font-weight: bold;
+    color: var(--text-color-primary);
+}
+/* ...and so on for all other elements. */
+.user-item.has-unread {
+  background-color: var(--unread-bg);
+  border-left: 3px solid var(--primary-color);
+}
+
+.user-last-message.unread {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.message-indicator {
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  margin-left: auto;
+}
+
+.no-users-message {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-secondary);
+}
+/* 🔹 Highlight user row when it has unread messages */
+.user-item.has-unread {
+  background-color: rgba(0, 200, 255, 0.08); /* subtle highlight */
+  border-left: 4px solid #00c8ff; /* accent bar on left */
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* 🔹 Unread badge (small circle with count) */
+.user-unread-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 50%;
+  background-color: #ff3b30; /* red for urgency */
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+
+/* 🔹 Message indicator dot (WhatsApp-like) */
+.message-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #00c8ff;
+  margin-left: 6px;
+}
+
+/* 🔹 Style last message text differently when unread */
+.user-last-message.unread {
+  font-weight: 600;
+  color: #111; /* darker for emphasis */
+}
