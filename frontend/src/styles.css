@@ -176,35 +176,69 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #aaa;
 }
+
 :root {
-  --font-family: 'Poppins', sans-serif;
-  
-  /* Light Theme (Default) */
-  --background-color: #f0f2f5;
-  --card-background-color: #ffffff;
-  --sidebar-background-color: #f8f9fa;
-  --text-color-primary: #1c1e21;
-  --text-color-secondary: #65676b;
-  --text-color-tertiary: #8a8d91;
-  --border-color: #e4e6eb;
-  --hover-color: #e4e6eb;
-  
-  /* Shared Colors */
-  --primary-color: #7f7ace;
-  --primary-color-light: #17b4a2;
-  --text-color-inverted: #000000;
-  --online-indicator-color: #31a24c;
-  --notification-badge-color: #fa383e;
+  /* Default Light Theme Colors */
+  --background-color: #ffffff;
+  --foreground-color: #111827;
+  --sidebar-background-color: #f9fafb;
+  --border-color: #e5e7eb;
+  --input-background: #f3f4f6;
+  --accent-color: #2563eb;
+  --accent-hover: #1e40af;
 }
 
-/* 2. Define overrides for the dark theme */
-body[data-theme="dark"] {
-  --background-color: #18191a;
-  --card-background-color: #242526;
-  --sidebar-background-color: #1c1d1e;
-  --text-color-primary: #000000;
-  --text-color-secondary: #000000;
-  --text-color-tertiary: #8a8d91;
-  --border-color: #3a3b3c;
-  --hover-color: #ffffff;
+/* 🌙 Dark Theme */
+[data-theme='dark'] {
+  --background-color: #0f172a;
+  --foreground-color: #f9fafb;
+  --sidebar-background-color: #1e293b;
+  --border-color: #334155;
+  --input-background: #273549;
+  --accent-color: #38bdf8;
+  --accent-hover: #0ea5e9;
+}
+
+/* 🌊 Ocean Theme */
+[data-theme='ocean'] {
+  --background-color: #e0f7fa;
+  --foreground-color: #023e8a;
+  --sidebar-background-color: #caf0f8;
+  --border-color: #90e0ef;
+  --input-background: #ade8f4;
+  --accent-color: #0077b6;
+  --accent-hover: #023e8a;
+}
+
+/* 🌅 Sunset Theme */
+[data-theme='sunset'] {
+  --background-color: #fff0e6;
+  --foreground-color: #4b2c20;
+  --sidebar-background-color: #ffe5d0;
+  --border-color: #ffc3a0;
+  --input-background: #ffd6b0;
+  --accent-color: #ff6b35;
+  --accent-hover: #d94f04;
+}
+
+/* 🌲 Forest Theme */
+[data-theme='forest'] {
+  --background-color: #f0fdf4;
+  --foreground-color: #052e16;
+  --sidebar-background-color: #dcfce7;
+  --border-color: #86efac;
+  --input-background: #bbf7d0;
+  --accent-color: #15803d;
+  --accent-hover: #166534;
+}
+
+/* ✨ Midnight Theme */
+[data-theme='midnight'] {
+  --background-color: #0b1120;
+  --foreground-color: #f1f5f9;
+  --sidebar-background-color: #1e293b;
+  --border-color: #475569;
+  --input-background: #273549;
+  --accent-color: #6366f1;
+  --accent-hover: #4f46e5;
 }

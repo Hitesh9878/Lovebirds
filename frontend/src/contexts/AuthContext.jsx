@@ -1,4 +1,4 @@
-// src/contexts/AuthContext.jsx - Fixed version
+// src/contexts/AuthContext.jsx - FIXED VERSION
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const AuthContext = createContext();
@@ -39,7 +39,6 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  // FIXED: Parameters are now in correct order (token, userData)
   const login = (token, userData) => {
     console.log('🔑 AuthContext: Login called with:', { userData: userData?.name, token: !!token });
     
@@ -71,33 +70,45 @@ export const AuthProvider = ({ children }) => {
         formData.append('avatar', profileData.avatar);
       }
 
+      console.log('🔄 AuthContext: Updating profile with:', {
+        name: profileData.name,
+        hasAvatar: !!profileData.avatar
+      });
+
+      // ✅ FIXED: Correct API endpoint URL
       const response = await fetch('http://localhost:5000/api/users/profile', {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
+          // Don't set Content-Type for FormData - let browser set it with boundary
         },
         body: formData,
       });
+
+      console.log('📡 AuthContext: Profile update response status:', response.status);
 
       if (!response.ok) {
         let errorMessage = 'Failed to update profile';
         try {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
+          console.error('❌ AuthContext: Profile update error:', errorData);
         } catch (e) {
           errorMessage = response.statusText || errorMessage;
+          console.error('❌ AuthContext: Profile update error (no JSON):', e);
         }
         throw new Error(errorMessage);
       }
 
       const updatedUser = await response.json();
+      console.log('✅ AuthContext: Profile updated successfully:', updatedUser);
 
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
 
       return updatedUser;
     } catch (error) {
-      console.error('Profile update error:', error);
+      console.error('❌ AuthContext: Profile update error:', error);
       throw error;
     }
   };
@@ -109,12 +120,6 @@ export const AuthProvider = ({ children }) => {
     updateProfile,
     loading,
   };
-
-  // Debug current state
-  console.log('🔍 AuthContext current state:', { 
-    user: user?.name || 'Not logged in', 
-    loading 
-  });
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

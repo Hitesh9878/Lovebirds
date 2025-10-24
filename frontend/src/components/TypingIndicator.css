@@ -1,0 +1,279 @@
+/* === Ultra Compact Typing Indicator === */
+.typing-indicator-float {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  animation: fadeSlideUp 0.3s ease-out;
+  pointer-events: none;
+  width: auto;
+  max-width: 90%;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.typing-indicator-popup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(26, 26, 46, 0.95), rgba(22, 33, 62, 0.95));
+  padding: 6px 14px;
+  border-radius: 20px;
+  box-shadow: 
+    0 3px 15px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  min-width: 140px;
+  transition: all 0.2s ease;
+}
+
+.typing-avatar-container {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #6a11cb 0%, #2575fc 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(102, 126, 234, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.human-emote {
+  font-size: 14px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.typing-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.typing-text {
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.typing-name {
+  font-weight: 600;
+  background: linear-gradient(90deg, #00f2fe, #4facfe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  height: 10px;
+  margin-left: 2px;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00f2fe, #4facfe);
+  animation: bounceDot 1.4s infinite ease-in-out both;
+}
+
+.dot:nth-child(1) { animation-delay: -0.32s; }
+.dot:nth-child(2) { animation-delay: -0.16s; }
+.dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes bounceDot {
+  0%, 80%, 100% {
+    transform: scale(0.7);
+    opacity: 0.6;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ========== COMPACT RESPONSIVE DESIGN ========== */
+
+/* Extra Small Phones (< 360px) */
+@media (max-width: 359px) {
+  .typing-indicator-popup {
+    padding: 5px 12px;
+    gap: 6px;
+    min-width: 130px;
+    border-radius: 18px;
+  }
+  
+  .typing-avatar-container {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .human-emote {
+    font-size: 13px;
+  }
+  
+  .typing-text {
+    font-size: 11px;
+  }
+  
+  .typing-dots {
+    gap: 2px;
+    height: 9px;
+  }
+  
+  .dot {
+    width: 3px;
+    height: 3px;
+  }
+}
+
+/* Small Phones (360px - 480px) - MAIN TARGET */
+@media (min-width: 360px) and (max-width: 480px) {
+  .typing-indicator-popup {
+    padding: 6px 14px;
+    gap: 8px;
+    min-width: 140px;
+    border-radius: 20px;
+  }
+  
+  .typing-avatar-container {
+    width: 26px;
+    height: 26px;
+  }
+  
+  .human-emote {
+    font-size: 14px;
+  }
+  
+  .typing-text {
+    font-size: 12px;
+  }
+  
+  .typing-dots {
+    gap: 3px;
+    height: 10px;
+  }
+  
+  .dot {
+    width: 4px;
+    height: 4px;
+  }
+}
+
+/* Tablets (481px - 768px) - Still Compact */
+@media (min-width: 481px) and (max-width: 768px) {
+  .typing-indicator-popup {
+    padding: 7px 16px;
+    gap: 9px;
+    min-width: 150px;
+    border-radius: 22px;
+  }
+  
+  .typing-avatar-container {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .human-emote {
+    font-size: 15px;
+  }
+  
+  .typing-text {
+    font-size: 13px;
+  }
+  
+  .typing-dots {
+    gap: 3px;
+    height: 11px;
+  }
+  
+  .dot {
+    width: 4.5px;
+    height: 4.5px;
+  }
+}
+
+/* Desktop (769px and above) - Minimal Increase */
+@media (min-width: 769px) {
+  .typing-indicator-popup {
+    padding: 8px 18px;
+    gap: 10px;
+    min-width: 160px;
+    border-radius: 24px;
+  }
+  
+  .typing-avatar-container {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .human-emote {
+    font-size: 16px;
+  }
+  
+  .typing-text {
+    font-size: 14px;
+  }
+  
+  .typing-dots {
+    gap: 4px;
+    height: 12px;
+  }
+  
+  .dot {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+/* Landscape Mode - Ultra Compact */
+@media (max-height: 500px) and (orientation: landscape) {
+  .typing-indicator-float {
+    bottom: 90px;
+  }
+  
+  .typing-indicator-popup {
+    padding: 4px 12px;
+    transform: scale(0.85);
+    transform-origin: center bottom;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .typing-indicator-float {
+    animation: none;
+  }
+  
+  .dot {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .typing-indicator-popup {
+    padding: 6px 14px;
+  }
+}

@@ -1,28 +1,40 @@
+// src/routes/auth.js - YOUR ORIGINAL CODE (WORKS AS-IS)
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
 import { googleLogin, getMe, signUp, directLogin } from '../controllers/auth.controller.js';
 import { protect } from '../middlewares/auth.js';
-import { upload } from '../services/cloudinaryService.js'; // ✅ Use Cloudinary upload
+import { upload } from '../services/cloudinaryService.js';
 import { sendPasswordResetEmail } from '../services/emailService.js';
 
 const router = express.Router();
 
-// -------------------- OTP Store --------------------
+// ==================== OTP Store ====================
 const otpStore = new Map();
 const generateOTP = () => Math.floor(1000 + Math.random() * 9000).toString();
 
-// -------------------- Auth Routes --------------------
+// ==================== Auth Routes ====================
+
+// Google Login
 router.post('/google', googleLogin);
 
-// ✅ Now avatar upload will go directly to Cloudinary
+// Signup with Cloudinary avatar upload
 router.post('/signup', upload.single('avatar'), signUp);
 
-router.post('/login', directLogin);
+// Direct Login
+
+
+// Get Current User
 router.get('/me', protect, getMe);
 
-// -------------------- Forgot Password --------------------
+// ==================== Forgot Password Flow ====================
+
+/**
+ * @route   POST /api/auth/forgot-password
+ * @desc    Send OTP to user's email for password reset
+ * @access  Public
+ */
 router.post('/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;
@@ -52,7 +64,11 @@ router.post('/forgot-password', async (req, res) => {
     }
 });
 
-// -------------------- Verify OTP --------------------
+/**
+ * @route   POST /api/auth/verify-otp
+ * @desc    Verify OTP sent to user's email
+ * @access  Public
+ */
 router.post('/verify-otp', (req, res) => {
     try {
         const { email, otp } = req.body;
@@ -72,7 +88,11 @@ router.post('/verify-otp', (req, res) => {
     }
 });
 
-// -------------------- Reset Password --------------------
+/**
+ * @route   POST /api/auth/reset-password
+ * @desc    Reset password after OTP verification
+ * @access  Public
+ */
 router.post('/reset-password', async (req, res) => {
     try {
         const { email, otp, newPassword } = req.body;
@@ -97,7 +117,46 @@ router.post('/reset-password', async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+// In your auth routes (backend)
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
 
+        // Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
 
+        // Check password - this uses the matchPassword method
+        const isPasswordValid = await user.matchPassword(password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        // Generate token and send response
+        const token = jwt.sign(
+            { id: user._id }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '30d' }
+        );
+
+        res.json({
+            token,
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar,
+                isOnline: user.isOnline,
+                status: user.status
+            }
+        });
+
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
 export default router;

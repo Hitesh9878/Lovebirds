@@ -1,4 +1,4 @@
-// src/components/ProfileModal.jsx
+// src/components/ProfileModal.jsx - FIXED VERSION
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { X, Camera, User } from 'lucide-react';
@@ -15,13 +15,20 @@ const ProfileModal = ({ isOpen, onClose }) => {
   const [error, setError] = useState('');
   const fileInputRef = useRef(null);
 
+  // Helper function to get full avatar URL
+  const getFullAvatarUrl = (avatarPath) => {
+    if (!avatarPath) return '';
+    if (avatarPath.startsWith('http')) return avatarPath;
+    return `${window.location.origin}/uploads/${avatarPath}`;
+  };
+
   useEffect(() => {
     // Update form data if user changes
     setFormData({
       name: user?.name || '',
       avatar: null
     });
-    setPreviewUrl(user?.avatar || '');
+    setPreviewUrl(getFullAvatarUrl(user?.avatar) || '');
   }, [user]);
 
   const handleFileChange = (e) => {

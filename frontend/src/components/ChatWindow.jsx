@@ -1,12 +1,14 @@
+// src/components/ChatWindow.jsx - INCOGNITO WITH DURATION DROPDOWN
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
 import VideoCallModal from './VideoCallModal';
 import IncomingCallNotification from './IncomingCallNotification';
+import TypingIndicator from './TypingIndicator';
 import { SocketContext } from '../contexts/SocketContext';
 import { useAuth } from '../contexts/AuthContext.jsx';
 import { VideoCallContext } from '../contexts/VideoCallContext';
-import { Video, Send, Search, MoreVertical, Phone, Trash2 } from 'lucide-react';
+import { Video, Send, Search, MoreVertical, Phone, Trash2, UserMinus, Ban, ChevronDown } from 'lucide-react';
 import './ChatWindow.css';
 
 const getChatId = (userA, userB) => [userA, userB].sort().join('_');
@@ -18,7 +20,13 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
     const [showMenu, setShowMenu] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
+    const [typingUser, setTypingUser] = useState(null);
+    const [incognitoEnabled, setIncognitoEnabled] = useState(false);
+    const [incognitoExpiry, setIncognitoExpiry] = useState(null);
+    const [incognitoDuration, setIncognitoDuration] = useState(3); // Default 3 hours
+    const [showDurationMenu, setShowDurationMenu] = useState(false);
     const typingTimeoutRef = useRef(null);
+    const durationMenuRef = useRef(null);
 
     const socket = useContext(SocketContext);
     const { user } = useAuth();
@@ -29,7 +37,19 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    useEffect(scrollToBottom, [messages]);
+    useEffect(scrollToBottom, [messages, isTyping]);
+
+    // Close duration menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (durationMenuRef.current && !durationMenuRef.current.contains(event.target)) {
+                setShowDurationMenu(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     useEffect(() => {
         if (!socket || !selectedUser || !user) return;
@@ -63,13 +83,19 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
                 );
 
                 if (unreadMessages.length > 0) {
-                    console.log(`Marking ${unreadMessages.length} messages as read`);
                     socket.emit('markChatAsRead', { otherUserId: selectedUser._id });
                 }
             }
         };
 
-        const handleMessagesLoadError = () => setLoading(false);
+        const handleMessagesLoadError = (error) => {
+            setLoading(false);
+            if (error.requiresFriendship) {
+                alert('You must be friends with this user to view messages. Send a chat request first!');
+            } else if (error.isBlocked) {
+                alert('You cannot view messages from this user.');
+            }
+        };
 
         const handleChatCleared = (data) => {
             if (data.chatId === chatId) {
@@ -78,25 +104,17 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
             }
         };
 
-        const handleChatClearSuccess = () => {
-            setMessages([]);
-            setShowMenu(false);
-        };
-
-        const handleChatClearError = (error) => {
-            console.error('Failed to clear chat:', error);
-            alert('Failed to clear chat. Please try again.');
+        const handleMessageDeleted = (data) => {
+            if (data.chatId === chatId) {
+                setMessages(prev => prev.filter(msg => msg._id !== data.messageId));
+            }
         };
 
         const handleMessageDelivered = (data) => {
             const { messageId, deliveredAt } = data;
             setMessages(prev => prev.map(msg => {
                 if (msg._id === messageId || msg.tempId === data.tempId) {
-                    return {
-                        ...msg,
-                        isDelivered: true,
-                        deliveredAt: deliveredAt
-                    };
+                    return { ...msg, isDelivered: true, deliveredAt: deliveredAt };
                 }
                 return msg;
             }));
@@ -106,11 +124,7 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
             const { messageId, readAt } = data;
             setMessages(prev => prev.map(msg => {
                 if (msg._id === messageId) {
-                    return {
-                        ...msg,
-                        isRead: true,
-                        readAt: readAt
-                    };
+                    return { ...msg, isRead: true, readAt: readAt };
                 }
                 return msg;
             }));
@@ -121,43 +135,69 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
             if (readBy !== user._id) {
                 setMessages(prev => prev.map(msg => {
                     if (msg.sender._id === user._id && !msg.isRead) {
-                        return {
-                            ...msg,
-                            isRead: true,
-                            readAt: readAt
-                        };
+                        return { ...msg, isRead: true, readAt: readAt };
                     }
                     return msg;
                 }));
             }
         };
 
-        // Handle user typing - only show for messages from the selected user
-        const handleUserTyping = (data) => {
-            console.log('⌨️ Typing data received:', data, 'selectedUser._id:', selectedUser._id);
-            if (data?.senderId === selectedUser._id) {
-                console.log('⌨️ Setting isTyping to true for user:', selectedUser.name);
-                setIsTyping(true);
-                if (typingTimeoutRef.current) {
-                    clearTimeout(typingTimeoutRef.current);
-                }
-                typingTimeoutRef.current = setTimeout(() => {
-                    console.log('⌨️ Typing timeout - setting isTyping to false');
-                    setIsTyping(false);
-                }, 3000);
-            } else {
-                console.log('⌨️ Ignoring typing from different user');
+        const handleTyping = (data) => {
+            if (data?.userId === user._id) return;
+            if (data?.userId !== selectedUser._id) return;
+            if (data?.chatId !== chatId) return;
+            
+            setTypingUser(selectedUser.name);
+            setIsTyping(true);
+            
+            if (typingTimeoutRef.current) {
+                clearTimeout(typingTimeoutRef.current);
+            }
+            
+            typingTimeoutRef.current = setTimeout(() => {
+                setIsTyping(false);
+                setTypingUser(null);
+            }, 6000);
+        };
+        
+        const handleStopTyping = (data) => {
+            if (data?.userId === user._id) return;
+            if (data?.userId !== selectedUser._id) return;
+            if (data?.chatId !== chatId) return;
+            
+            setIsTyping(false);
+            setTypingUser(null);
+            
+            if (typingTimeoutRef.current) {
+                clearTimeout(typingTimeoutRef.current);
             }
         };
 
-        const handleStopTyping = (data) => {
-            console.log('✋ Stop typing data received:', data);
-            if (data?.senderId === selectedUser._id) {
-                console.log('✋ Setting isTyping to false');
-                setIsTyping(false);
-                if (typingTimeoutRef.current) {
-                    clearTimeout(typingTimeoutRef.current);
+        const handleIncognitoEnabled = (data) => {
+            if (data.chatId === chatId) {
+                setIncognitoEnabled(true);
+                setIncognitoExpiry(new Date(data.expiresAt));
+                console.log('🕵️ Incognito mode enabled:', data);
+            }
+        };
+
+        const handleIncognitoDisabled = (data) => {
+            if (data.chatId === chatId) {
+                setIncognitoEnabled(false);
+                setIncognitoExpiry(null);
+                console.log('👁️ Incognito mode disabled:', data);
+            }
+        };
+
+        const handleIncognitoStatus = (data) => {
+            if (data.chatId === chatId) {
+                setIncognitoEnabled(data.enabled);
+                if (data.enabled && data.expiresAt) {
+                    setIncognitoExpiry(new Date(data.expiresAt));
+                } else {
+                    setIncognitoExpiry(null);
                 }
+                console.log('🕵️ Incognito status loaded:', data);
             }
         };
 
@@ -165,13 +205,15 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
         socket.on('messagesLoaded', handleMessagesLoaded);
         socket.on('messagesLoadError', handleMessagesLoadError);
         socket.on('chatCleared', handleChatCleared);
-        socket.on('chatClearSuccess', handleChatClearSuccess);
-        socket.on('chatClearError', handleChatClearError);
+        socket.on('messageDeleted', handleMessageDeleted);
         socket.on('messageDelivered', handleMessageDelivered);
         socket.on('messageRead', handleMessageRead);
         socket.on('chatRead', handleChatRead);
-        socket.on('userTyping', handleUserTyping);
+        socket.on('typing', handleTyping);
         socket.on('stopTyping', handleStopTyping);
+        socket.on('incognitoEnabled', handleIncognitoEnabled);
+        socket.on('incognitoDisabled', handleIncognitoDisabled);
+        socket.on('incognitoStatus', handleIncognitoStatus);
 
         socket.on('messageSent', (confirmation) => {
             if (confirmation?.success && confirmation.tempId) {
@@ -192,6 +234,12 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
         });
 
         socket.on('sendMessageError', (error) => {
+            if (error.requiresFriendship) {
+                alert('You must be friends to send messages. Send a chat request first!');
+            } else if (error.isBlocked) {
+                alert('You cannot send messages to this user.');
+            }
+            
             if (error.tempId) {
                 setMessages(prev => prev.map(msg => {
                     if (msg.tempId === error.tempId) {
@@ -207,18 +255,22 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
             }
         });
 
+        socket.emit('getIncognitoStatus', { otherUserId: selectedUser._id });
+
         return () => {
             socket.off('receiveMessage', handleReceiveMessage);
             socket.off('messagesLoaded', handleMessagesLoaded);
             socket.off('messagesLoadError', handleMessagesLoadError);
             socket.off('chatCleared', handleChatCleared);
-            socket.off('chatClearSuccess', handleChatClearSuccess);
-            socket.off('chatClearError', handleChatClearError);
+            socket.off('messageDeleted', handleMessageDeleted);
             socket.off('messageDelivered', handleMessageDelivered);
             socket.off('messageRead', handleMessageRead);
             socket.off('chatRead', handleChatRead);
-            socket.off('userTyping', handleUserTyping);
+            socket.off('typing', handleTyping);
             socket.off('stopTyping', handleStopTyping);
+            socket.off('incognitoEnabled', handleIncognitoEnabled);
+            socket.off('incognitoDisabled', handleIncognitoDisabled);
+            socket.off('incognitoStatus', handleIncognitoStatus);
             socket.off('messageSent');
             socket.off('sendMessageError');
             if (typingTimeoutRef.current) {
@@ -226,6 +278,34 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
             }
         };
     }, [socket, selectedUser, user]);
+
+    const handleToggleIncognito = (hours = null) => {
+        if (!socket || !selectedUser) return;
+        
+        const newState = !incognitoEnabled;
+        const duration = hours || incognitoDuration;
+        
+        console.log('🔄 Toggling incognito mode:', newState, 'Duration:', duration, 'hours');
+        
+        socket.emit('toggleIncognito', {
+            otherUserId: selectedUser._id,
+            enabled: newState,
+            durationHours: duration
+        });
+
+        setShowDurationMenu(false);
+    };
+
+    const handleDurationSelect = (hours) => {
+        setIncognitoDuration(hours);
+        if (incognitoEnabled) {
+            // If already enabled, restart with new duration
+            handleToggleIncognito(hours);
+        } else {
+            // If not enabled, just save the selection
+            setShowDurationMenu(false);
+        }
+    };
 
     const handleSendMessage = async (content) => {
         if (!content.trim() || !selectedUser || !socket) return;
@@ -271,7 +351,6 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
                         senderName: user.name
                     })
                 });
-                console.log(`Email sent to ${selectedUser.email}`);
             } catch (error) {
                 console.error('Failed to send offline email:', error);
             }
@@ -279,69 +358,37 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
     };
 
     const handleSendFile = async (file) => {
-        if (!file || !selectedUser || !socket) {
-            console.error('❌ Missing requirements:', {
-                file: !!file,
-                selectedUser: !!selectedUser,
-                socket: !!socket
-            });
-            return;
-        }
-        
-        console.log('📤 === VOICE MESSAGE DEBUG START ===');
-        console.log('📤 File details:', {
-            name: file.name,
-            type: file.type,
-            size: file.size
-        });
+        if (!file || !selectedUser || !socket) return;
         
         const formData = new FormData();
         formData.append('file', file);
         
         try {
-            console.log('📤 Uploading to:', 'http://localhost:5000/api/upload');
-            
             const response = await fetch('http://localhost:5000/api/upload', {
                 method: 'POST',
                 body: formData,
             });
             
-            console.log('📤 Upload response status:', response.status);
-            
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error('❌ Upload failed:', errorData);
                 throw new Error(errorData.message || 'File upload failed');
             }
             
             const data = await response.json();
-            console.log('✅ Upload successful:', data);
-            
             const { fileUrl, fileName, mimeType } = data;
             
-            // ✅ CRITICAL FIX: Always use 'voice' for voice recordings
             let messageType = 'file';
             if (mimeType.startsWith('image/')) {
                 messageType = 'image';
             } else if (mimeType.startsWith('video/')) {
                 messageType = 'video';
-            } else if (mimeType.startsWith('audio/') || file.type.startsWith('audio/')) {
-                messageType = 'voice'; // ✅ Always use 'voice' for audio files
+            } else if (mimeType.startsWith('audio/')) {
+                messageType = 'voice';
             }
-            
-            console.log('📤 Determined messageType:', messageType, 'MIME type:', mimeType);
             
             const tempId = Date.now().toString();
             const chatId = getChatId(user._id, selectedUser._id);
 
-            console.log('📤 Emitting sendMessage:', {
-                receiverId: selectedUser._id,
-                messageType,
-                content: { fileUrl, fileName },
-                tempId
-            });
-            
-            // Send via socket
             socket.emit('sendMessage', {
                 receiverId: selectedUser._id,
                 messageType,
@@ -352,7 +399,6 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
                 tempId: tempId
             });
 
-            // Create optimistic message
             const optimisticMessage = {
                 _id: tempId,
                 tempId,
@@ -372,9 +418,7 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
                 readAt: null
             };
 
-            console.log('✨ Adding optimistic message:', optimisticMessage);
             setMessages(prev => [...prev, optimisticMessage]);
-            console.log('📤 === VOICE MESSAGE DEBUG END ===\n');
             
         } catch (error) {
             console.error('❌ Error uploading and sending file:', error);
@@ -386,12 +430,41 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
         if (window.confirm('Are you sure you want to clear this chat? This action cannot be undone.')) {
             socket.emit('clearChat', { otherUserId: selectedUser._id });
         }
+        setShowMenu(false);
+    };
+
+    const handleRemoveFriend = () => {
+        if (window.confirm(`Are you sure you want to remove ${selectedUser.name} from your friends? You will need to send a new chat request to message them again.`)) {
+            if (socket) {
+                console.log('🔄 Removing friend:', selectedUser._id);
+                socket.emit('removeFriend', { friendId: selectedUser._id });
+                alert(`${selectedUser.name} has been removed from your friends list.`);
+                setShowMenu(false);
+            }
+        } else {
+            setShowMenu(false);
+        }
+    };
+
+    const handleBlockUser = () => {
+        if (window.confirm(`Are you sure you want to block ${selectedUser.name}? They will be removed from your friends and won't be able to send you messages or chat requests.`)) {
+            if (socket) {
+                console.log('🚫 Blocking user:', selectedUser._id);
+                socket.emit('blockUser', { userIdToBlock: selectedUser._id });
+                alert(`${selectedUser.name} has been blocked successfully.`);
+                setShowMenu(false);
+            }
+        } else {
+            setShowMenu(false);
+        }
     };
 
     useEffect(() => {
         if (!selectedUser) {
             setMessages([]);
             setIsTyping(false);
+            setIncognitoEnabled(false);
+            setIncognitoExpiry(null);
             return;
         }
         setMessages([]);
@@ -450,10 +523,28 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
         ? messages.filter(msg => msg.content?.text?.toLowerCase().includes(searchTerm.toLowerCase()))
         : messages;
 
+    const getRemainingTime = () => {
+        if (!incognitoExpiry) return '';
+        const now = new Date();
+        const diff = incognitoExpiry - now;
+        if (diff <= 0) return 'Expired';
+        
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        
+        if (hours > 0) {
+            return `${hours}h ${minutes}m remaining`;
+        }
+        return `${minutes}m remaining`;
+    };
+
     return (
         <div className="chat-window-container">
             <IncomingCallNotification />
             <VideoCallModal />
+            
+            {isTyping && <TypingIndicator userName={typingUser || selectedUser.name} />}
+            
             <div className="chat-header">
                 <div className="user-info">
                     <img
@@ -468,8 +559,13 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
                         <h3 className="header-name">{selectedUser.name}</h3>
                         <p className="header-status">
                             <span className={`status-indicator ${selectedUser.isOnline ? 'online' : 'offline'}`}></span>
-                            {selectedUser.isOnline ? 'Active now' : isTyping ? 'Typing...' : 'Offline'}
+                            {isTyping ? `${selectedUser.name} is typing...` : selectedUser.isOnline ? 'Active now' : 'Offline'}
                         </p>
+                        {incognitoEnabled && incognitoExpiry && (
+                            <p className="incognito-status">
+                                🕵️ Incognito mode • {getRemainingTime()}
+                            </p>
+                        )}
                     </div>
                 </div>
                 <div className="header-actions">
@@ -480,6 +576,58 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
                     >
                         <Search size={20} />
                     </button>
+                    
+                    {/* ✅ UPDATED: Incognito Toggle with Duration Dropdown */}
+                    <div className="incognito-toggle-container" ref={durationMenuRef}>
+                        <label className="incognito-toggle">
+                            <input
+                                type="checkbox"
+                                checked={incognitoEnabled}
+                                onChange={() => handleToggleIncognito()}
+                            />
+                            <span className="incognito-slider"></span>
+                        </label>
+                        <div className="incognito-controls">
+                            <span className="incognito-label">Incognito</span>
+                            <button
+                                className="incognito-duration-btn"
+                                onClick={() => setShowDurationMenu(!showDurationMenu)}
+                                title="Select duration"
+                            >
+                                {incognitoDuration}h <ChevronDown size={14} />
+                            </button>
+                        </div>
+                        
+                        {showDurationMenu && (
+                            <div className="incognito-duration-menu">
+                                <button
+                                    className={`duration-option ${incognitoDuration === 1 ? 'active' : ''}`}
+                                    onClick={() => handleDurationSelect(1)}
+                                >
+                                    <span className="duration-icon">⏱️</span>
+                                    <span className="duration-text">1 Hour</span>
+                                    {incognitoDuration === 1 && <span className="check-icon">✓</span>}
+                                </button>
+                                <button
+                                    className={`duration-option ${incognitoDuration === 2 ? 'active' : ''}`}
+                                    onClick={() => handleDurationSelect(2)}
+                                >
+                                    <span className="duration-icon">⏱️</span>
+                                    <span className="duration-text">2 Hours</span>
+                                    {incognitoDuration === 2 && <span className="check-icon">✓</span>}
+                                </button>
+                                <button
+                                    className={`duration-option ${incognitoDuration === 3 ? 'active' : ''}`}
+                                    onClick={() => handleDurationSelect(3)}
+                                >
+                                    <span className="duration-icon">⏱️</span>
+                                    <span className="duration-text">3 Hours</span>
+                                    {incognitoDuration === 3 && <span className="check-icon">✓</span>}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                    
                     <button onClick={() => callUser(selectedUser._id)} className="header-btn" title="Video call">
                         <Video size={20} />
                     </button>
@@ -496,6 +644,16 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
                         </button>
                         {showMenu && (
                             <div className="dropdown-menu">
+                                <button className="dropdown-item warning" onClick={handleRemoveFriend}>
+                                    <UserMinus size={16} /> Remove Friend
+                                </button>
+                                
+                                <button className="dropdown-item danger" onClick={handleBlockUser}>
+                                    <Ban size={16} /> Block User
+                                </button>
+                                
+                                <div className="dropdown-divider"></div>
+                                
                                 <button className="dropdown-item danger" onClick={handleClearChat}>
                                     <Trash2 size={16} /> Clear Chat
                                 </button>
@@ -551,27 +709,6 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
                                 isSender={isSenderMessage(msg)}
                             />
                         ))
-                    )}
-                    
-                    {/* Enhanced Typing Indicator */}
-                    {isTyping && (
-                        <div className="typing-indicator">
-                            <div className="typing-indicator-content">
-                                <img
-                                    src={getAvatarUrl(selectedUser)}
-                                    alt={selectedUser.name}
-                                    className="typing-avatar"
-                                />
-                                <div className="typing-bubble">
-                                    <div className="typing-dots">
-                                        <div className="typing-dot"></div>
-                                        <div className="typing-dot"></div>
-                                        <div className="typing-dot"></div>
-                                    </div>
-                                    <span className="typing-text">typing...</span>
-                                </div>
-                            </div>
-                        </div>
                     )}
                     
                     <div ref={messagesEndRef} />
