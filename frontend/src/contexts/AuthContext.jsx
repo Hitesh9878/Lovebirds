@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       // ✅ FIXED: Correct API endpoint URL
-      const response = await fetch('http://localhost:5000/api/users/profile', {
+      const response = await fetch('https://lovebirds-mwyz.onrender.com/api/users/profile', {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${token}`,
