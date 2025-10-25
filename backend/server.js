@@ -1,7 +1,5 @@
-// server.js - COMPLETE SERVER WITH ALL FEATURES
 import express from 'express';
 import http from 'http';
-import cors from 'cors';
 import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import path from 'path';
@@ -21,12 +19,6 @@ connectDB();
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// CORS configuration
-app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true
-}));
 
 // Body parsing middleware
 app.use(express.json());
@@ -59,7 +51,7 @@ app.get('/api/health', (req, res) => {
 // API Routes - CORRECT ORDER IS CRITICAL
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
-app.use('/api/users', userRoutes); // This now has correct route ordering inside
+app.use('/api/users', userRoutes);
 app.use('/api/upload', uploadRoutes);
 
 // Root endpoint
