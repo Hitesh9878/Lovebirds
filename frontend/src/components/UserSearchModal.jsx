@@ -108,7 +108,7 @@ const UserSearchModal = ({ isOpen, onClose, currentFriends = [] }) => {
       
       // Try the main endpoint first
       let response = await fetch(
-        `http://localhost:5000/api/users/search?q=${encodeURIComponent(searchQuery)}`,
+        `https://lovebirds-mwyz.onrender.com/api/users/search?q=${encodeURIComponent(searchQuery)}`,
         {
           headers: { 
             'Authorization': `Bearer ${token}`,
