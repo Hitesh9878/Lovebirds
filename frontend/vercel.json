@@ -1,13 +1,5 @@
 {
   "version": 2,
-  "projects": {
-    "frontend": {
-      "buildCommand": "npm run build",
-      "outputDirectory": "frontend/dist",
-      "installCommand": "npm install",
-      "rootDirectory": "frontend"
-    }
-  },
   "builds": [
     {
       "src": "frontend/package.json",
