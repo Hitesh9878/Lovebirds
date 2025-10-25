@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an instance of axios
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Your backend server URL
+  baseURL: 'https://lovebirds-mwyz.onrender.com/api', // Your backend server URL
   headers: {
     'Content-Type': 'application/json',
   },
