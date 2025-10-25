@@ -343,7 +343,7 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
 
         if (!selectedUser.isOnline) {
             try {
-                await fetch('http://localhost:5000/api/send-email', {
+                await fetch('https://lovebirds-mwyz.onrender.com/api/send-email', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -364,7 +364,7 @@ const ChatWindow = ({ selectedUser, onOptimisticMessage }) => {
         formData.append('file', file);
         
         try {
-            const response = await fetch('http://localhost:5000/api/upload', {
+            const response = await fetch('https://lovebirds-mwyz.onrender.com/api/upload', {
                 method: 'POST',
                 body: formData,
             });
