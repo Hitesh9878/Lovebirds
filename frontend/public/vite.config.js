@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
+import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
@@ -8,9 +9,20 @@ export default defineConfig({
     port: 5173,
     host: true
   },
+  build: {
+    // ✅ Explicitly set the output folder
+    outDir: 'dist',
+
+    // ✅ Ensure build works even if deployed from a subfolder
+    emptyOutDir: true,
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
   optimizeDeps: {
     esbuildOptions: {
-      // Node.js global to browser globalThis
       define: {
         global: 'globalThis'
       },
