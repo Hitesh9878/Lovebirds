@@ -19,7 +19,7 @@ const BlockedUsersModal = ({ isOpen, onClose }) => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/users/blocked/list', {
+            const response = await fetch('https://lovebirds-mwyz.onrender.com/api/users/blocked/list', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
