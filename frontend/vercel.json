@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "projects": {
+    "frontend": {
+      "buildCommand": "npm run build",
+      "outputDirectory": "frontend/dist",
+      "installCommand": "npm install",
+      "rootDirectory": "frontend"
+    }
+  },
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "frontend/dist" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "frontend/dist/$1"
+    }
+  ]
+}
