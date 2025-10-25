@@ -41,7 +41,7 @@ const ChatLayout = ({ messagesMap, lastMessageUpdate, onOptimisticMessage }) => 
         }
 
         // Try to fetch friends list first
-        let response = await fetch('http://localhost:5000/api/users/friends/list', {
+        let response = await fetch('https://lovebirds-mwyz.onrender.com/api/users/friends/list', {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ const ChatLayout = ({ messagesMap, lastMessageUpdate, onOptimisticMessage }) => 
         } else {
           // Fallback to all users if friends endpoint fails
           console.log('⚠️ [CHAT LAYOUT] Friends endpoint failed, fetching all users...');
-          response = await fetch('http://localhost:5000/api/users', {
+          response = await fetch('https://lovebirds-mwyz.onrender.com/api/users', {
             headers: {
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
